@@ -52,7 +52,6 @@ public class MediaCenter extends Application{
                                     updateMediaList(result);
                                 }
                             }
-                        
                         );
                     }
                 };
