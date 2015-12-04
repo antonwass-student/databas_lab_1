@@ -14,7 +14,8 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Anton
+ * @author Anton Wass
+ * @author Joachim Zetterman
  */
 public class Databas_lab_1 extends Application {
     
