@@ -12,6 +12,8 @@ import java.util.ArrayList;
  * @author Anton
  */
 public interface DatabaseCommunication {
+    public void connect();
+    public void disconnect();
     public void addMediaEntity(MediaEntity mediaEntity);
     public void addGenre(Genre genre);
     public void addMediaType(MediaType mediaType);
