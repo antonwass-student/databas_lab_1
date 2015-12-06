@@ -36,15 +36,16 @@ import javafx.stage.WindowEvent;
  */
 public class MediaCenter extends Application{
     DatabaseCommunication dbCom = null;
+    User currentUser = null;
     
-    private TableView tv = new MediaTable();
-    private Button btn = new Button();
-    private MenuBar menuBar = new MenuBar();
-    private Menu menuFile = new Menu("Options");
-    private TextField searchKey = new TextField();
-    private Label tableTitle = new Label("Media");
-    private ComboBox cbMediaType = new ComboBox();
-    private ComboBox cbGenre = new ComboBox();
+    private final TableView tv = new MediaTable();
+    private final Button btn = new Button();
+    private final MenuBar menuBar = new MenuBar();
+    private final Menu menuFile = new Menu("Options");
+    private final TextField searchKey = new TextField();
+    private final Label tableTitle = new Label("Media");
+    private final ComboBox cbMediaType = new ComboBox();
+    private final ComboBox cbGenre = new ComboBox();
     
     public MediaCenter(){
         this.dbCom = new DBMySql();
@@ -73,8 +74,15 @@ public class MediaCenter extends Application{
                 public void handle(ActionEvent event) {
                 Thread t  = new Thread(){
                     public void run(){
-                        ArrayList<MediaEntity> result = 
-                                dbCom.getMediaBySearch(searchKey.getText());
+                        ArrayList<MediaEntity> result;
+                        if((Genre)cbGenre.getValue() == null){
+                             result = 
+                                    dbCom.getMediaBySearch(searchKey.getText());
+                        }
+                        else{
+                            result = 
+                                    dbCom.getMediaBySearch(searchKey.getText(), (Genre)cbGenre.getValue());
+                        }
                         javafx.application.Platform.runLater(
                             new Runnable(){
                                 public void run(){
@@ -104,10 +112,14 @@ public class MediaCenter extends Application{
         
         BorderPane root = new BorderPane();
         VBox leftBox = new VBox();
+        VBox searchBox = new VBox();
         leftBox.setSpacing(15);
         leftBox.setPadding(new Insets(10,10,10,10));
         
-        leftBox.getChildren().add(searchKey);
+        searchBox.getChildren().add(new Label("Keyword"));
+        searchBox.getChildren().add(searchKey);
+        leftBox.getChildren().add(searchBox);
+        
         leftBox.getChildren().add(btn);
         
         leftBox.getChildren().add(new Label("Filters:"));

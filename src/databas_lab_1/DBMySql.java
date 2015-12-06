@@ -10,33 +10,35 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
  * @author Anton
  */
 public class DBMySql implements DatabaseCommunication{
-    String user = "mediacenter";
-    String password = "asdfgh11";
-    String database = "MediaCenter";
-    String server = "jdbc:mysql://localhost:3306/" + database +
+    private String user = "mediacenter";
+    private String password = "asdfgh11";
+    private String database = "MediaCenter";
+    private String server = "jdbc:mysql://localhost:3306/" + database +
             "?UseClientEnc=UTF8";
-    Connection con = null;
+    private Connection con = null;
     
     //Prepared statements
-    PreparedStatement getCreatorSQL = null;
-    PreparedStatement getAllMediaByTitleSQL = null;
-    PreparedStatement getAllGenresSQL = null;
-    PreparedStatement getAllMediaTypesSQL = null;
+    private PreparedStatement getCreatorSQL = null;
+    private PreparedStatement getAllMediaByTitleSQL = null;
+    private PreparedStatement getAllMediaByTitleAndGenreSQL = null;
+    private PreparedStatement getAllGenresSQL = null;
+    private PreparedStatement getAllMediaTypesSQL = null;
     
     public DBMySql(){
         connect();
     }
     
+    /**
+     * Call once to establish connection to database.
+     */
     @Override
     public void connect(){
         try{
@@ -51,6 +53,9 @@ public class DBMySql implements DatabaseCommunication{
         }
     }
     
+    /**
+     * Call once to close the connecton with the database.
+     */
     public void disconnect(){
         try {
             if(con != null)
@@ -60,6 +65,10 @@ public class DBMySql implements DatabaseCommunication{
         }
     }
     
+    /**
+     * Sends a query to the server requesting all media types from the database.
+     * @return ArrayList<MediaType> containing objects collected from the database.
+     */
     @Override
     public ArrayList<MediaType> getMediaTypes(){
         ArrayList<MediaType> types = new ArrayList();
@@ -83,6 +92,10 @@ public class DBMySql implements DatabaseCommunication{
         return types;
     }
     
+    /**
+     * Sends a query to the server requesting all genres.
+     * @return ArrayList<Genre> containing the collected objects from the database.
+     */
     @Override
     public ArrayList<Genre> getGenres(){
         ArrayList<Genre> genres = new ArrayList();
@@ -101,8 +114,6 @@ public class DBMySql implements DatabaseCommunication{
         catch (SQLException e) {
             System.out.println("SQL error : " + e.getMessage());
         }
-    
-        
         return genres;
     }
 
@@ -129,7 +140,12 @@ public class DBMySql implements DatabaseCommunication{
     public void addReview(MediaEntity mediaEntity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    /**
+     * Searches the database for all mediaentities that matches with the keyword.
+     * @param keyword the keyword to search for.
+     * @return Returns all entities matching the keyword.
+     */
     @Override
     public ArrayList<MediaEntity> getMediaBySearch(String keyword) {
         ArrayList<MediaEntity> mediaList = new ArrayList();
@@ -159,8 +175,65 @@ public class DBMySql implements DatabaseCommunication{
             getAllMediaByTitleSQL.setString(4, keyword);
             getAllMediaByTitleSQL.setString(5, keyword);
             getAllMediaByTitleSQL.setString(6, keyword);
+
             
             ResultSet rs = getAllMediaByTitleSQL.executeQuery();
+            
+            while(rs.next()){
+                MediaType type = new MediaType(rs.getInt(9), rs.getString(10));
+                Genre genre = new Genre(rs.getInt(7), rs.getString(8));
+                Creator creator = new Creator(rs.getInt(11), rs.getString(12));
+                User user = new User(rs.getInt(14), rs.getString(15), null);
+                mediaList.add(new MediaEntity(rs.getInt(1), rs.getString(2),
+                        type, user, creator, genre, rs.getFloat(18)));
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        
+        return mediaList;
+    }
+
+    /**
+     * Searches the database for all mediaentities that matches with the keyword.
+     * @param keyword the keyword to search for.
+     * @param genreFilter only take matches with the specified genre.
+     * @return Returns all entities matching the keyword.
+     */
+    @Override
+    public ArrayList<MediaEntity> getMediaBySearch(String keyword, Genre genreFilter) {
+        ArrayList<MediaEntity> mediaList = new ArrayList();
+        keyword = "%" + keyword + "%";
+        
+        try {
+            if(getAllMediaByTitleAndGenreSQL == null){
+                String sql = "SELECT * FROM t_mediaentity"
+                        + " left join t_genre on t_mediaEntity.GenreID = t_genre.GenreID "
+                        + " left join t_mediatype on t_mediaEntity.mediatypeid = t_mediatype.mediatypeid "
+                        + " left join t_creator on t_mediaEntity.creatorid = t_creator.CreatorID "
+                        + " left join t_user on t_mediaentity.userid = t_user.userid"
+                        + " left join avg_rating on t_mediaentity.mediaentityid = avg_rating.MediaEntityID "
+                        + " where (t_mediaentity.title like ? "
+                        + " or t_genre.name like ? "
+                        + " or t_creator.name like ? "
+                        + " or t_mediatype.type like ?"
+                        + " or t_user.username like ?"
+                        + " or avg_rating.rating like ?)"
+                        + " and t_mediaentity.genreid = ?";
+                
+                getAllMediaByTitleAndGenreSQL = con.prepareStatement(sql);
+            }
+            
+            getAllMediaByTitleAndGenreSQL.setString(1, keyword);
+            getAllMediaByTitleAndGenreSQL.setString(2, keyword);
+            getAllMediaByTitleAndGenreSQL.setString(3, keyword);
+            getAllMediaByTitleAndGenreSQL.setString(4, keyword);
+            getAllMediaByTitleAndGenreSQL.setString(5, keyword);
+            getAllMediaByTitleAndGenreSQL.setString(6, keyword);
+            getAllMediaByTitleAndGenreSQL.setInt(7, genreFilter.getId());
+            
+            ResultSet rs = getAllMediaByTitleAndGenreSQL.executeQuery();
             
             while(rs.next()){
                 MediaType type = new MediaType(rs.getInt(9), rs.getString(10));
