@@ -10,7 +10,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -116,6 +119,32 @@ public class DBMySql implements DatabaseCommunication{
         }
         return genres;
     }
+    
+    @Override
+    public User loginWithUser(String username, String pwd){
+        try {
+            String sql = "SELECT * FROM T_User WHERE username = '" + username + "' AND"
+                    + " password = '" + pwd + "'";
+           
+            Statement loginStmt = con.createStatement();
+            ResultSet rs = loginStmt.executeQuery(sql);
+            
+            if(rs.next()){
+                User user = 
+                        new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+                return user;
+            }
+            else{
+                return null;
+            }
+            
+            
+        } catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        
+        return null;
+    }
 
     @Override
     public void addMediaEntity(MediaEntity mediaEntity) {
@@ -154,17 +183,17 @@ public class DBMySql implements DatabaseCommunication{
         try {
             if(getAllMediaByTitleSQL == null){
                 String sql = "SELECT * FROM t_mediaentity"
-                        + " left join t_genre on t_mediaEntity.GenreID = t_genre.GenreID "
-                        + " left join t_mediatype on t_mediaEntity.mediatypeid = t_mediatype.mediatypeid "
-                        + " left join t_creator on t_mediaEntity.creatorid = t_creator.CreatorID "
-                        + " left join t_user on t_mediaentity.userid = t_user.userid"
-                        + " left join avg_rating on t_mediaentity.mediaentityid = avg_rating.MediaEntityID "
-                        + " where t_mediaentity.title like ? "
-                        + " or t_genre.name like ? "
-                        + " or t_creator.name like ? "
-                        + " or t_mediatype.type like ?"
-                        + " or t_user.username like ?"
-                        + " or avg_rating.rating like ?";
+                        + " LEFT JOIN t_genre ON t_mediaEntity.GenreID = t_genre.GenreID "
+                        + " LEFT JOIN t_mediatype ON t_mediaEntity.mediatypeid = t_mediatype.mediatypeid "
+                        + " LEFT JOIN t_creator ON t_mediaEntity.creatorid = t_creator.CreatorID "
+                        + " LEFT JOIN t_user ON t_mediaentity.userid = t_user.userid"
+                        + " LEFT JOIN avg_rating ON t_mediaentity.mediaentityid = avg_rating.MediaEntityID "
+                        + " WHERE t_mediaentity.title LIKE ? "
+                        + " OR t_genre.name LIKE ? "
+                        + " OR t_creator.name LIKE ? "
+                        + " OR t_mediatype.type LIKE ?"
+                        + " OR t_user.username LIKE ?"
+                        + " OR avg_rating.rating LIKE ?";
                 
                 getAllMediaByTitleSQL = con.prepareStatement(sql);
             }

@@ -22,12 +22,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
@@ -35,8 +35,8 @@ import javafx.stage.WindowEvent;
  * @author Anton
  */
 public class MediaCenter extends Application{
-    DatabaseCommunication dbCom = null;
-    User currentUser = null;
+    private DatabaseCommunication dbCom = null;
+    private User currentUser = null;
     
     private final TableView tv = new MediaTable();
     private final Button btn = new Button();
@@ -54,9 +54,8 @@ public class MediaCenter extends Application{
     @Override
     public void start(Stage primaryStage) {
         
-        updateGenreCombobox();
-        updateMediaTypeCombobox();
-        updateCreatorCombobox();
+        LoginStage loginStage = new LoginStage(dbCom, this);
+        AddMediaStage addMediaStage = new AddMediaStage(dbCom);
         
         btn.setText("Search");
         btn.setMinWidth(200);
@@ -99,14 +98,40 @@ public class MediaCenter extends Application{
         cbGenre.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event){
-                updateGenreCombobox();
+                Thread t  = new Thread(){
+                    public void run(){
+                        ArrayList<Genre> result = dbCom.getGenres();
+                        
+                        javafx.application.Platform.runLater(
+                            new Runnable(){
+                                public void run(){
+                                    updateGenreCombobox(result);
+                                }
+                            }
+                        );
+                    }
+                };
+                t.start();
             };
         });
         
         cbMediaType.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event){
-                updateMediaTypeCombobox();
+                Thread t  = new Thread(){
+                    public void run(){
+                        ArrayList<MediaType> result = dbCom.getMediaTypes();
+                        
+                        javafx.application.Platform.runLater(
+                            new Runnable(){
+                                public void run(){
+                                    updateMediaTypeCombobox(result);
+                                }
+                            }
+                        );
+                    }
+                };
+                t.start();
             };
         });
         
@@ -119,32 +144,28 @@ public class MediaCenter extends Application{
         searchBox.getChildren().add(new Label("Keyword"));
         searchBox.getChildren().add(searchKey);
         leftBox.getChildren().add(searchBox);
-        
         leftBox.getChildren().add(btn);
-        
         leftBox.getChildren().add(new Label("Filters:"));
 
-        HBox cbGenreBox = new HBox();
+        VBox cbGenreBox = new VBox();
         Label lblGenreSelect = new Label("Genre:   ");
         cbGenreBox.getChildren().add(lblGenreSelect);
         cbGenreBox.getChildren().add(cbGenre);
         leftBox.getChildren().add(cbGenreBox);
         
-        HBox mediaTypeBox = new HBox();
+        VBox mediaTypeBox = new VBox();
         Label lblTypeSelect = new Label("Media Type:    ");
         mediaTypeBox.getChildren().add(lblTypeSelect);
         mediaTypeBox.getChildren().add(cbMediaType);
         leftBox.getChildren().add(mediaTypeBox);
         
-        VBox centerBox = new VBox();
-        centerBox.getChildren().add(tableTitle);
-        centerBox.getChildren().add(tv);
+        VBox centerBoxMedia = new VBox();
+        centerBoxMedia.getChildren().add(tableTitle);
+        centerBoxMedia.getChildren().add(tv);
         
         tableTitle.setStyle("-fx-font-size:20px; -fx-border:5px solid black;");
         
-
-       
-        root.setCenter(centerBox);
+        root.setCenter(centerBoxMedia);
         root.setLeft(leftBox);
         menuBar.getMenus().add(menuFile);
         root.setTop(menuBar);
@@ -159,10 +180,12 @@ public class MediaCenter extends Application{
         launch(args);
     }
     
-    private void updateMediaTypeCombobox(){
-        ArrayList<MediaType>types = new ArrayList();
-        types.add(new MediaType(-1, "Any"));
-        types.addAll(dbCom.getMediaTypes());
+    public void setUser(User user){
+        this.currentUser = user;
+    }
+    
+    private void updateMediaTypeCombobox(ArrayList<MediaType> types){
+        types.add(0, new MediaType(-1, "Any"));
         cbMediaType.setItems(FXCollections.observableArrayList(types));
     }
     
@@ -170,10 +193,8 @@ public class MediaCenter extends Application{
         
     }
     
-    private void updateGenreCombobox(){
-        ArrayList<Genre>genres = new ArrayList();
-        genres.add(new Genre(-1, "Any"));
-        genres.addAll(dbCom.getGenres());
+    private void updateGenreCombobox(ArrayList<Genre> genres){
+        genres.add( 0, new Genre(-1, "Any"));
         cbGenre.setItems(FXCollections.observableArrayList(genres));
     }
     
