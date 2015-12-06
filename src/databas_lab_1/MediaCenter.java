@@ -13,21 +13,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
@@ -41,7 +39,7 @@ public class MediaCenter extends Application{
     private final TableView tv = new MediaTable();
     private final Button btn = new Button();
     private final MenuBar menuBar = new MenuBar();
-    private final Menu menuFile = new Menu("Options");
+    private final Menu menuFile = new Menu("New");
     private final TextField searchKey = new TextField();
     private final Label tableTitle = new Label("Media");
     private final ComboBox cbMediaType = new ComboBox();
@@ -55,7 +53,17 @@ public class MediaCenter extends Application{
     public void start(Stage primaryStage) {
         
         LoginStage loginStage = new LoginStage(dbCom, this);
-        AddMediaStage addMediaStage = new AddMediaStage(dbCom);
+        AddMediaStage addMediaStage = new AddMediaStage(dbCom, currentUser);
+        
+        MenuItem menuAddMedia = new MenuItem("Media");
+        menuAddMedia.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                addMediaStage.show();
+            }
+        });
+        
+        menuBar.getMenus().add(menuFile);
+        menuFile.getItems().add(menuAddMedia);
         
         btn.setText("Search");
         btn.setMinWidth(200);
@@ -167,7 +175,6 @@ public class MediaCenter extends Application{
         
         root.setCenter(centerBoxMedia);
         root.setLeft(leftBox);
-        menuBar.getMenus().add(menuFile);
         root.setTop(menuBar);
         Scene scene = new Scene(root, 800, 640);
         
