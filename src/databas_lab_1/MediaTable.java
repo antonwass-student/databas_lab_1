@@ -21,6 +21,7 @@ public class MediaTable extends TableView {
         TableColumn genreCol = new TableColumn("Genre");
         TableColumn creatorCol = new TableColumn("Creator");
         TableColumn addedbyCol = new TableColumn("Added By");
+        TableColumn ratingCol = new TableColumn("Rating");
         
         titleCol.setCellValueFactory
         (new PropertyValueFactory<MediaEntity, String>("title"));
@@ -31,8 +32,17 @@ public class MediaTable extends TableView {
         typeCol.setCellValueFactory
         (new PropertyValueFactory<MediaEntity, String>("typeName"));
         
+        genreCol.setCellValueFactory
+        (new PropertyValueFactory<MediaEntity, String>("genreName"));
+        
+        addedbyCol.setCellValueFactory
+        (new PropertyValueFactory<MediaEntity, String>("addedBy"));
+        
+        ratingCol.setCellValueFactory
+        (new PropertyValueFactory<MediaEntity, String>("rating"));
+        
         super.getColumns().addAll(titleCol, typeCol, genreCol,
-                creatorCol, addedbyCol);
+                creatorCol, addedbyCol, ratingCol);
         
     }
 }

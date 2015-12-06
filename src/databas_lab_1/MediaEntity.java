@@ -18,18 +18,32 @@ public class MediaEntity {
     private Creator creator;
     private Genre genre;
     private MediaType mediaType;
+    private float rating;
     
-    public MediaEntity(int id, String title, MediaType mediaType, User addedBy, Creator creator, Genre genre){
+    public MediaEntity(int id, String title, MediaType mediaType, User addedBy, Creator creator, Genre genre, float rating){
         this.id = id;
         this.title = title;
         this.mediaType = mediaType;
         this.addedBy = addedBy;
         this.creator = creator;
         this.genre = genre;
+        this.rating = rating;
+    }
+    
+    public String getRating(){
+        return "" + rating;
     }
     
     public String getTitle(){
         return title;
+    }
+    
+    public String getGenreName(){
+        return genre.getName();
+    }
+    
+    public String getAddedBy(){
+        return addedBy.getName();
     }
     
     public String getCreatorName(){

@@ -20,8 +20,6 @@ public interface DatabaseCommunication {
     public void addCreator(Creator creator);
     public void addReview(MediaEntity mediaEntity);
     public ArrayList<MediaEntity> getMediaBySearch(String keyword);
-    public ArrayList<MediaEntity> getMediaByTitle(String title);
-    public ArrayList<MediaEntity> getMediaByCreator(String creator);
-    public ArrayList<MediaEntity> getMediaByGenre(String genre);
-    public ArrayList<MediaEntity> getMediaByRating(float minRating);
+    public ArrayList<Genre> getGenres();
+    public ArrayList<MediaType> getMediaTypes();
 }

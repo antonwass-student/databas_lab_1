@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,7 +30,8 @@ public class DBMySql implements DatabaseCommunication{
     //Prepared statements
     PreparedStatement getCreatorSQL = null;
     PreparedStatement getAllMediaByTitleSQL = null;
-    
+    PreparedStatement getAllGenresSQL = null;
+    PreparedStatement getAllMediaTypesSQL = null;
     
     public DBMySql(){
         connect();
@@ -56,11 +59,55 @@ public class DBMySql implements DatabaseCommunication{
             System.out.println("SQL Error: " + e.getMessage());
         }
     }
+    
+    @Override
+    public ArrayList<MediaType> getMediaTypes(){
+        ArrayList<MediaType> types = new ArrayList();
+        try {
+            if(getAllMediaTypesSQL == null){
+                String sql = "SELECT * FROM T_MediaType";
+                getAllMediaTypesSQL = con.prepareStatement(sql);
+            }
+            
+            ResultSet rs = getAllMediaTypesSQL.executeQuery();
+            
+            while(rs.next()){
+                types.add(new MediaType(rs.getInt(1), rs.getString(2)));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+    
+        
+        return types;
+    }
+    
+    @Override
+    public ArrayList<Genre> getGenres(){
+        ArrayList<Genre> genres = new ArrayList();
+        try {
+            if(getAllGenresSQL == null){
+                String sql = "SELECT * FROM T_Genre";
+                getAllGenresSQL = con.prepareStatement(sql);
+            }
+            
+            ResultSet rs = getAllGenresSQL.executeQuery();
+            
+            while(rs.next()){
+                genres.add(new Genre(rs.getInt(1), rs.getString(2)));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+    
+        
+        return genres;
+    }
 
     @Override
     public void addMediaEntity(MediaEntity mediaEntity) {
-        
-        
     }
 
     @Override
@@ -82,10 +129,6 @@ public class DBMySql implements DatabaseCommunication{
     public void addReview(MediaEntity mediaEntity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public ArrayList<MediaEntity> getMediaByTitle(String title){
-        return null;
-    }
 
     @Override
     public ArrayList<MediaEntity> getMediaBySearch(String keyword) {
@@ -94,17 +137,18 @@ public class DBMySql implements DatabaseCommunication{
         
         try {
             if(getAllMediaByTitleSQL == null){
-                
                 String sql = "SELECT * FROM t_mediaentity"
                         + " left join t_genre on t_mediaEntity.GenreID = t_genre.GenreID "
                         + " left join t_mediatype on t_mediaEntity.mediatypeid = t_mediatype.mediatypeid "
                         + " left join t_creator on t_mediaEntity.creatorid = t_creator.CreatorID "
                         + " left join t_user on t_mediaentity.userid = t_user.userid"
+                        + " left join avg_rating on t_mediaentity.mediaentityid = avg_rating.MediaEntityID "
                         + " where t_mediaentity.title like ? "
                         + " or t_genre.name like ? "
                         + " or t_creator.name like ? "
                         + " or t_mediatype.type like ?"
-                        + " or t_user.username like ?";
+                        + " or t_user.username like ?"
+                        + " or avg_rating.rating like ?";
                 
                 getAllMediaByTitleSQL = con.prepareStatement(sql);
             }
@@ -114,6 +158,7 @@ public class DBMySql implements DatabaseCommunication{
             getAllMediaByTitleSQL.setString(3, keyword);
             getAllMediaByTitleSQL.setString(4, keyword);
             getAllMediaByTitleSQL.setString(5, keyword);
+            getAllMediaByTitleSQL.setString(6, keyword);
             
             ResultSet rs = getAllMediaByTitleSQL.executeQuery();
             
@@ -121,9 +166,9 @@ public class DBMySql implements DatabaseCommunication{
                 MediaType type = new MediaType(rs.getInt(9), rs.getString(10));
                 Genre genre = new Genre(rs.getInt(7), rs.getString(8));
                 Creator creator = new Creator(rs.getInt(11), rs.getString(12));
-                User user = new User(rs.getInt(13), rs.getString(14), null);
+                User user = new User(rs.getInt(14), rs.getString(15), null);
                 mediaList.add(new MediaEntity(rs.getInt(1), rs.getString(2),
-                        type, user, creator, genre));
+                        type, user, creator, genre, rs.getFloat(18)));
             }
             
         } catch (SQLException e) {
@@ -132,10 +177,6 @@ public class DBMySql implements DatabaseCommunication{
         
         return mediaList;
     }
-    
-    //public Genre getGenreByID(){
-    //    
-    //}
     
     public Creator getCreatorByID(int id){
         Creator creator = null;
@@ -175,20 +216,4 @@ public class DBMySql implements DatabaseCommunication{
         
         return mediaType;
     }
-
-    @Override
-    public ArrayList<MediaEntity> getMediaByCreator(String creator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<MediaEntity> getMediaByGenre(String genre) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<MediaEntity> getMediaByRating(float minRating) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
