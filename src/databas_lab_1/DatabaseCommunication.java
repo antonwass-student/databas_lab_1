@@ -19,6 +19,7 @@ public interface DatabaseCommunication {
     public void addMediaType(MediaType mediaType);
     public void addCreator(Creator creator);
     public void addReview(MediaEntity mediaEntity);
+    public ArrayList<MediaEntity> getMediaBySearch(String keyword);
     public ArrayList<MediaEntity> getMediaByTitle(String title);
     public ArrayList<MediaEntity> getMediaByCreator(String creator);
     public ArrayList<MediaEntity> getMediaByGenre(String genre);

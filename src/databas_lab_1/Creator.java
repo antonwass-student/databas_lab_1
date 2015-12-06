@@ -5,6 +5,8 @@
  */
 package databas_lab_1;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  *
  * @author Anton
@@ -16,5 +18,9 @@ public class Creator {
     public Creator(int id, String name){
         this.id = id;
         this.name = name;
+    }
+    
+    public String getName(){
+        return name;
     }
 }

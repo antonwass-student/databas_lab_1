@@ -13,8 +13,12 @@ public class MediaType {
     private int id;
     private String type;
     
-    public MediaType(int id, String name){
+    public MediaType(int id, String type){
         this.id = id;
         this.type = type;
+    }
+    
+    public String getType(){
+        return type;
     }
 }

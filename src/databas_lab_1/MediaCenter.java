@@ -8,11 +8,19 @@ package databas_lab_1;
 import java.util.ArrayList;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -23,14 +31,21 @@ import javafx.stage.WindowEvent;
 public class MediaCenter extends Application{
     DatabaseCommunication dbCom = null;
     
+    private TableView tv = new MediaTable();
+    private Button btn = new Button();
+    private MenuBar menuBar = new MenuBar();
+    private Menu menuFile = new Menu("File");
+    private TextField searchKey = new TextField();
+    
     public MediaCenter(){
         this.dbCom = new DBMySql();
     }
     
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("SELECT * FROM testtable");
+        
+        btn.setText("Search");
+        btn.setMinWidth(200);
         
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
           public void handle(WindowEvent we) {
@@ -45,7 +60,8 @@ public class MediaCenter extends Application{
                 public void handle(ActionEvent event) {
                 Thread t  = new Thread(){
                     public void run(){
-                        ArrayList<MediaEntity> result = dbCom.getMediaByTitle("");
+                        ArrayList<MediaEntity> result = 
+                                dbCom.getMediaBySearch(searchKey.getText());
                         javafx.application.Platform.runLater(
                             new Runnable(){
                                 public void run(){
@@ -59,9 +75,17 @@ public class MediaCenter extends Application{
             }
         });
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        BorderPane root = new BorderPane();
+        VBox leftBox = new VBox();
         
+        leftBox.getChildren().add(btn);
+        leftBox.getChildren().add(searchKey);
+        
+        
+        root.setCenter(tv);
+        root.setLeft(leftBox);
+        menuBar.getMenus().add(menuFile);
+        root.setTop(menuBar);
         Scene scene = new Scene(root, 800, 640);
         
         primaryStage.setTitle("Media Center by Anton Wass & Joachim Zetterman");
@@ -76,7 +100,11 @@ public class MediaCenter extends Application{
     private void updateMediaList(ArrayList<MediaEntity> media){
         if(media == null)
             return;
-        for(MediaEntity m : media)
-            System.out.println(m.getTitle());
+        
+        ObservableList<MediaEntity> data = 
+                FXCollections.observableArrayList(media);
+        
+        tv.setItems(data);
+        
     }
 }

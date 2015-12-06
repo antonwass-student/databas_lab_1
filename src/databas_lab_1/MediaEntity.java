@@ -5,6 +5,8 @@
  */
 package databas_lab_1;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  *
  * @author Anton
@@ -15,10 +17,12 @@ public class MediaEntity {
     private User addedBy;
     private Creator creator;
     private Genre genre;
+    private MediaType mediaType;
     
-    public MediaEntity(int id, String title, User addedBy, Creator creator, Genre genre){
+    public MediaEntity(int id, String title, MediaType mediaType, User addedBy, Creator creator, Genre genre){
         this.id = id;
         this.title = title;
+        this.mediaType = mediaType;
         this.addedBy = addedBy;
         this.creator = creator;
         this.genre = genre;
@@ -26,5 +30,13 @@ public class MediaEntity {
     
     public String getTitle(){
         return title;
+    }
+    
+    public String getCreatorName(){
+        return creator.getName();
+    }
+    
+    public String getTypeName(){
+        return mediaType.getType();
     }
 }
