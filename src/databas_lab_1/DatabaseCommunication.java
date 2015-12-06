@@ -23,6 +23,7 @@ public interface DatabaseCommunication {
     public ArrayList<MediaEntity> getMediaBySearch(String keyword, Genre genre);
     public ArrayList<Genre> getGenres();
     public ArrayList<MediaType> getMediaTypes();
+    public ArrayList<Creator> getCreators();
     
     public User loginWithUser(String username, String pwd);
 }

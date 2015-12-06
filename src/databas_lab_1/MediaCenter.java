@@ -171,7 +171,7 @@ public class MediaCenter extends Application{
         centerBoxMedia.getChildren().add(tableTitle);
         centerBoxMedia.getChildren().add(tv);
         
-        tableTitle.setStyle("-fx-font-size:20px; -fx-border:5px solid black;");
+        tableTitle.setStyle("-fx-font-size:20px;");
         
         root.setCenter(centerBoxMedia);
         root.setLeft(leftBox);
@@ -196,8 +196,9 @@ public class MediaCenter extends Application{
         cbMediaType.setItems(FXCollections.observableArrayList(types));
     }
     
-    private void updateCreatorCombobox(){
-        
+    private void updateCreatorCombobox(ArrayList<Creator> creators){
+        //cbCreator.setItems(FXCollections.observableArrayList(creators));
+    
     }
     
     private void updateGenreCombobox(ArrayList<Genre> genres){

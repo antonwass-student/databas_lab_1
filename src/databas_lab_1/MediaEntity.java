@@ -30,6 +30,22 @@ public class MediaEntity {
         this.rating = rating;
     }
     
+    public MediaType getMediaType(){
+        return mediaType;
+    }
+    
+    public User getAddedByUser(){
+        return addedBy;
+    }
+    
+    public Creator getCreator(){
+        return creator;
+    }
+    
+    public Genre getGenre(){
+        return genre;
+    }
+    
     public String getRating(){
         return "" + rating;
     }

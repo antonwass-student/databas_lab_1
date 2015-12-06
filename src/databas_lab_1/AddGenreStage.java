@@ -5,16 +5,10 @@
  */
 package databas_lab_1;
 
-import javafx.stage.Stage;
-
 /**
  *
  * @author Anton
  */
-public class AddMediaTypeStage extends Stage {
-    private DatabaseCommunication dbCom = null;
+public class AddGenreStage {
     
-    public AddMediaTypeStage(){
-        
-    }
 }

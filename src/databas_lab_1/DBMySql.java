@@ -12,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -34,6 +32,8 @@ public class DBMySql implements DatabaseCommunication{
     private PreparedStatement getAllMediaByTitleAndGenreSQL = null;
     private PreparedStatement getAllGenresSQL = null;
     private PreparedStatement getAllMediaTypesSQL = null;
+    private PreparedStatement getAllCreatorsSQL = null;
+    private PreparedStatement addNewMediaEntitySQL = null;
     
     public DBMySql(){
         connect();
@@ -95,6 +95,26 @@ public class DBMySql implements DatabaseCommunication{
         return types;
     }
     
+    public ArrayList<Creator> getCreators(){
+        ArrayList<Creator> creators = new ArrayList();
+        try {
+            if(getAllCreatorsSQL == null){
+                String sql = "SELECT * FROM T_Creator";
+                getAllCreatorsSQL = con.prepareStatement(sql);
+            }
+            
+            ResultSet rs = getAllCreatorsSQL.executeQuery();
+            
+            while(rs.next()){
+                creators.add(new Creator(rs.getInt(1), rs.getString(2)));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        return creators;
+    }
+    
     /**
      * Sends a query to the server requesting all genres.
      * @return ArrayList<Genre> containing the collected objects from the database.
@@ -148,6 +168,24 @@ public class DBMySql implements DatabaseCommunication{
 
     @Override
     public void addMediaEntity(MediaEntity mediaEntity) {
+        
+        try {
+            if(addNewMediaEntitySQL == null){
+                String sql = "INSERT INTO T_MediaEntity(title, mediatypeid, genreid, creatorid, userid)" +
+                            "values(?, ?, ?, ?, ?);";
+                addNewMediaEntitySQL = con.prepareStatement(sql);
+            }
+            
+            addNewMediaEntitySQL.setString(1, mediaEntity.getTitle());
+            addNewMediaEntitySQL.setInt(2, mediaEntity.getMediaType().getId());
+            addNewMediaEntitySQL.setInt(3, mediaEntity.getGenre().getId());
+            addNewMediaEntitySQL.setInt(4, mediaEntity.getCreator().getId());
+            addNewMediaEntitySQL.setInt(5, mediaEntity.getAddedByUser().getId());
+            int res = addNewMediaEntitySQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
 
     @Override

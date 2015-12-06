@@ -23,4 +23,12 @@ public class Creator {
     public String getName(){
         return name;
     }
+    
+    public int getId(){
+        return id;
+    }
+    
+    public String toString(){
+        return name;
+    }
 }

@@ -25,4 +25,8 @@ public class MediaType {
     public String toString(){
         return type;
     }
+    
+    public int getId(){
+        return id;
+    }
 }
