@@ -98,7 +98,14 @@ public class AddMediaStage extends Stage{
                         (Genre)cb_genre.getValue(), 0f);
                         
                         dbCom.addMediaEntity(media);
-                        closeStage();
+                        
+                        javafx.application.Platform.runLater(
+                            new Runnable(){
+                                public void run(){
+                                    closeStage();
+                                }
+                            }
+                        );
                     }
                 };
                 t.start();
