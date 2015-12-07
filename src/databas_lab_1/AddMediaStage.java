@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -33,9 +34,9 @@ public class AddMediaStage extends Stage{
     private ComboBox cb_genre = new ComboBox();
     private ComboBox cb_creator = new ComboBox();
     private Button btn_confirm = new Button("Confirm");
-    private Button btn_newType = new Button("New Type");
-    private Button btn_newCreator = new Button("New Creator");
-    private Button btn_newGenre = new Button("New Genre");
+    private Button btn_newType = new Button("+");
+    private Button btn_newCreator = new Button("+");
+    private Button btn_newGenre = new Button("+");
     
     public AddMediaStage(DatabaseCommunication dbCom, User user){
         this.dbCom = dbCom;
@@ -51,6 +52,13 @@ public class AddMediaStage extends Stage{
         HBox creatorBox = new HBox();
         creatorBox.getChildren().add(cb_creator);
         creatorBox.getChildren().add(btn_newCreator);
+        
+        btn_newCreator.setMinWidth(50);
+        btn_newGenre.setMinWidth(50);
+        btn_newType.setMinWidth(50);
+        creatorBox.setSpacing(20);
+        genreBox.setSpacing(20);
+        typeBox.setSpacing(20);
         
         VBox vb = new VBox();
         vb.getChildren().add(new Label("Add a new media entity"));
@@ -68,19 +76,19 @@ public class AddMediaStage extends Stage{
         
         btn_newType.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
-                AddMediaTypeStage newTypeStage = new AddMediaTypeStage();
+                AddMediaTypeStage newTypeStage = new AddMediaTypeStage(dbCom);
             }
         });
         
         btn_newGenre.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
-                AddGenreStage newGenreStage = new AddGenreStage();
+                AddGenreStage newGenreStage = new AddGenreStage(dbCom);
             }
         });
         
         btn_newCreator.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
-                AddCreatorStage newCreatorStage = new AddCreatorStage();
+                AddCreatorStage newCreatorStage = new AddCreatorStage(dbCom, currentUser);
             }
         });
         
@@ -171,6 +179,8 @@ public class AddMediaStage extends Stage{
                 t.start();
             };
         });
+        
+        
         
         super.setScene(scene_AddMedia);
     }

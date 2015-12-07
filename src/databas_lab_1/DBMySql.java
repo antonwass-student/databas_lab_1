@@ -34,6 +34,11 @@ public class DBMySql implements DatabaseCommunication{
     private PreparedStatement getAllMediaTypesSQL = null;
     private PreparedStatement getAllCreatorsSQL = null;
     private PreparedStatement addNewMediaEntitySQL = null;
+    private PreparedStatement addNewMediaTypeSQL = null;
+    private PreparedStatement addNewGenreSQL = null;
+    private PreparedStatement addNewCreatorSQL = null;
+    private PreparedStatement rateMediaEntitySQL = null;
+    private PreparedStatement checkIfRatedSQL = null;
     
     public DBMySql(){
         connect();
@@ -140,6 +145,12 @@ public class DBMySql implements DatabaseCommunication{
         return genres;
     }
     
+    /**
+     * Sends a login query to the database. If a row is matched with your username and password, the method will return with a user.
+     * @param username The username to login with.
+     * @param pwd The password to login with.
+     * @return Returns your user.
+     */
     @Override
     public User loginWithUser(String username, String pwd){
         try {
@@ -190,17 +201,51 @@ public class DBMySql implements DatabaseCommunication{
 
     @Override
     public void addGenre(Genre genre) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if(addNewGenreSQL == null){
+                String sql = "INSERT INTO T_Genre(name) values(?);";
+                addNewGenreSQL = con.prepareStatement(sql);
+            }
+            
+            addNewGenreSQL.setString(1, genre.getName());
+            int res = addNewGenreSQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
 
     @Override
     public void addMediaType(MediaType mediaType) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if(addNewMediaTypeSQL == null){
+                String sql = "INSERT INTO T_MediaType(type) values(?);";
+                addNewMediaTypeSQL = con.prepareStatement(sql);
+            }
+            
+            addNewMediaTypeSQL.setString(1, mediaType.getType());
+            int res = addNewMediaTypeSQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
 
     @Override
-    public void addCreator(Creator creator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addCreator(Creator creator, User user) {
+        try {
+            if(addNewCreatorSQL == null){
+                String sql = "INSERT INTO T_Creator(name, userid) values(?, ?);";
+                addNewCreatorSQL = con.prepareStatement(sql);
+            }
+            
+            addNewCreatorSQL.setString(1, creator.getName());
+            addNewCreatorSQL.setInt(2, user.getId());
+            int res = addNewCreatorSQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
 
     @Override
@@ -355,5 +400,56 @@ public class DBMySql implements DatabaseCommunication{
         }
         
         return mediaType;
+    }
+    
+    public boolean checkIfRated(MediaEntity me, User user){
+        try {
+            System.out.println("me id " + me.getId());
+            System.out.println("user id " + user.getId());
+            if(checkIfRatedSQL == null){
+                String sql = "SELECT * FROM T_Rating WHERE userid = ? AND mediaentityid = ?";
+                checkIfRatedSQL = con.prepareStatement(sql);
+            }
+           
+            checkIfRatedSQL.setInt(1, user.getId());
+            checkIfRatedSQL.setInt(2, me.getId());
+            
+            ResultSet res = checkIfRatedSQL.executeQuery();
+            
+            if(res.next())
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        return true;
+    }
+    
+    public void rateMediaEntity(MediaEntity me, User user, float rating){
+        
+        if(checkIfRated(me, user))
+            return;
+        
+        System.out.println("not rated yet");
+        try {
+            if(rateMediaEntitySQL == null){
+                String sql = "INSERT INTO T_Rating(rating, userid, mediaentityid) values(?, ?, ?);";
+                rateMediaEntitySQL = con.prepareStatement(sql);
+            }
+            
+            rateMediaEntitySQL.setFloat(1, rating);
+            rateMediaEntitySQL.setInt(2, user.getId());
+            rateMediaEntitySQL.setInt(3, me.getId());
+            
+            int res = rateMediaEntitySQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
 }

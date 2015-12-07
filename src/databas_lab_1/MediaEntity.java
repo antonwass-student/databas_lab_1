@@ -30,6 +30,11 @@ public class MediaEntity {
         this.rating = rating;
     }
     
+    
+    public int getId(){
+        return id;
+    }
+    
     public MediaType getMediaType(){
         return mediaType;
     }

@@ -5,9 +5,11 @@
  */
 package databas_lab_1;
 
+import javafx.event.EventHandler;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -22,6 +24,7 @@ public class MediaTable extends TableView {
         TableColumn creatorCol = new TableColumn("Creator");
         TableColumn addedbyCol = new TableColumn("Added By");
         TableColumn ratingCol = new TableColumn("Rating");
+        TableColumn rateCol = new TableColumn("Rate");
         
         titleCol.setCellValueFactory
         (new PropertyValueFactory<MediaEntity, String>("title"));
@@ -43,6 +46,7 @@ public class MediaTable extends TableView {
         
         super.getColumns().addAll(titleCol, typeCol, genreCol,
                 creatorCol, addedbyCol, ratingCol);
+        
         
     }
 }

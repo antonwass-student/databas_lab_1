@@ -24,6 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -62,8 +63,35 @@ public class MediaCenter extends Application{
             }
         });
         
+        MenuItem menuAddMediaType = new MenuItem("Media Type");
+        menuAddMediaType.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                AddMediaTypeStage amts = new AddMediaTypeStage(dbCom);
+                amts.show();
+            }
+        });
+        
+        MenuItem menuAddGenre = new MenuItem("Genre");
+        menuAddGenre.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                AddGenreStage amts = new AddGenreStage(dbCom);
+                amts.show();
+            }
+        });
+        
+        MenuItem menuAddCreator = new MenuItem("Creator");
+        menuAddCreator.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                AddCreatorStage amts = new AddCreatorStage(dbCom, currentUser);
+                amts.show();
+            }
+        });
+        
         menuBar.getMenus().add(menuFile);
         menuFile.getItems().add(menuAddMedia);
+        menuFile.getItems().add(menuAddMediaType);
+        menuFile.getItems().add(menuAddGenre);
+        menuFile.getItems().add(menuAddCreator);
         
         btn.setText("Search");
         btn.setMinWidth(200);
@@ -173,6 +201,22 @@ public class MediaCenter extends Application{
         
         tableTitle.setStyle("-fx-font-size:20px;");
         
+        HBox rateBox = new HBox();
+        TextField tf_rate = new TextField();
+        Button btn_rate = new Button("Rate!");
+        tf_rate.setMaxWidth(50);
+        rateBox.getChildren().add(tf_rate);
+        rateBox.getChildren().add(btn_rate);
+        root.setRight(rateBox);
+        
+        btn_rate.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent event){
+                MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
+                dbCom.rateMediaEntity(me, currentUser, MathUtility.clamp(Float.parseFloat(tf_rate.getText()), 0f, 5f));
+            }
+        });
+        
+        
         root.setCenter(centerBoxMedia);
         root.setLeft(leftBox);
         root.setTop(menuBar);
@@ -192,17 +236,14 @@ public class MediaCenter extends Application{
     }
     
     private void updateMediaTypeCombobox(ArrayList<MediaType> types){
-        types.add(0, new MediaType(-1, "Any"));
         cbMediaType.setItems(FXCollections.observableArrayList(types));
     }
     
     private void updateCreatorCombobox(ArrayList<Creator> creators){
         //cbCreator.setItems(FXCollections.observableArrayList(creators));
-    
     }
     
     private void updateGenreCombobox(ArrayList<Genre> genres){
-        genres.add( 0, new Genre(-1, "Any"));
         cbGenre.setItems(FXCollections.observableArrayList(genres));
     }
     

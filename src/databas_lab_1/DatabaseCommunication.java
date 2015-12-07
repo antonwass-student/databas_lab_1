@@ -17,7 +17,7 @@ public interface DatabaseCommunication {
     public void addMediaEntity(MediaEntity mediaEntity);
     public void addGenre(Genre genre);
     public void addMediaType(MediaType mediaType);
-    public void addCreator(Creator creator);
+    public void addCreator(Creator creator, User user);
     public void addReview(MediaEntity mediaEntity);
     public ArrayList<MediaEntity> getMediaBySearch(String keyword);
     public ArrayList<MediaEntity> getMediaBySearch(String keyword, Genre genre);
@@ -26,4 +26,6 @@ public interface DatabaseCommunication {
     public ArrayList<Creator> getCreators();
     
     public User loginWithUser(String username, String pwd);
+    public void rateMediaEntity(MediaEntity me, User user, float rating);
+    
 }

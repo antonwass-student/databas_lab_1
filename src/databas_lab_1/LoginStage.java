@@ -33,7 +33,7 @@ public class LoginStage extends Stage{
     public LoginStage(DatabaseCommunication dbCom, MediaCenter mc){
         this.dbCom = dbCom;
         this.mc = mc;
-        super.initStyle(StageStyle.DECORATED);
+        super.initStyle(StageStyle.UTILITY);
       
         VBox vb = new VBox();
         vb.getChildren().add(new Label("Login"));
