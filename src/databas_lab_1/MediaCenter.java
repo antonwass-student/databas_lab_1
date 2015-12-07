@@ -15,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -228,24 +229,30 @@ public class MediaCenter extends Application{
         btn_rate.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
-                dbCom.rateMediaEntity(me, currentUser, MathUtility.clamp(Float.parseFloat(tf_rate.getText()), 0f, 5f));
+                if(checkSelectedItem(me)){
+                    dbCom.rateMediaEntity(me, currentUser, MathUtility.clamp(Float.parseFloat(tf_rate.getText()), 0f, 5f));
+                }
             }
         });
         
         btn_addReview.setOnAction(new EventHandler<ActionEvent>(){
-            public void handle(ActionEvent evt){
+            public void handle(ActionEvent evt){              
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
-                AddReviewStage amts = new AddReviewStage(dbCom, currentUser, me);
-                amts.show();
+                if(checkSelectedItem(me)){
+                    AddReviewStage amts = new AddReviewStage(dbCom, currentUser, me);
+                    amts.show();
+                }
             }
         });
         
         btn_readReview.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent evt){
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
-                ReadReviewsStage amts = new ReadReviewsStage(dbCom, currentUser, me);
-                amts.show();
-            }
+                if(checkSelectedItem(me)){
+                    ReadReviewsStage amts = new ReadReviewsStage(dbCom, currentUser, me);
+                    amts.show();
+                }
+            }  
         });
         
         
@@ -279,7 +286,16 @@ public class MediaCenter extends Application{
         cbGenre.setItems(FXCollections.observableArrayList(genres));
     }
     
-    
+    private boolean checkSelectedItem(MediaEntity me){
+        if(me == null){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No selected item");
+            alert.setContentText("You have not selected any media entity, please try again!");
+            alert.show(); 
+            return false;
+        }
+        return true;
+    }
     
     private void updateMediaList(ArrayList<MediaEntity> media){
         if(media == null)
