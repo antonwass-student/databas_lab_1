@@ -10,39 +10,27 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
  *
- * @author Anton
+ * @author Joachim
  */
-public class AddReviewStage extends Stage{
+public class ReadReviewsStage extends Stage{
     private DatabaseCommunication dbCom = null;
     
-    private TextArea ta_review = new TextArea();
     private Button btn_confirm = new Button("Done");
     
-    
-    public AddReviewStage(DatabaseCommunication dbCom, User user){
-        this.dbCom = dbCom;
+    public ReadReviewsStage(DatabaseCommunication dbCom, User user){
+         this.dbCom = dbCom;
         super.initStyle(StageStyle.DECORATED);
         VBox vb = new VBox();
-        VBox textBox = new VBox();
-        super.setTitle("Add a new review!");
+        super.setTitle("Read reviews");
         
-        vb.getChildren().add(new Label("Add a new review!"));
-        
-        textBox.getChildren().add(new Label("Text:"));
-        textBox.getChildren().add(ta_review);
-        vb.getChildren().add(textBox);
-        
-        vb.getChildren().add(btn_confirm);
+        vb.getChildren().add(new Label("Read reviews"));
         vb.setPadding(new Insets(10,10,10,10));
         vb.setSpacing(10);
         

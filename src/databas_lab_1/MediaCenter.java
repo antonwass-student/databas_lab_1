@@ -88,21 +88,12 @@ public class MediaCenter extends Application{
                 amts.show();
             }
         });
-        
-        MenuItem menuAddReview = new MenuItem("Review");
-        menuAddReview.setOnAction(new EventHandler<ActionEvent>(){
-            public void handle(ActionEvent evt){
-                AddReviewStage amts = new AddReviewStage(dbCom, currentUser);
-                amts.show();
-            }
-        });
-        
+           
         menuBar.getMenus().add(menuFile);
         menuFile.getItems().add(menuAddMedia);
         menuFile.getItems().add(menuAddMediaType);
         menuFile.getItems().add(menuAddGenre);
         menuFile.getItems().add(menuAddCreator);
-        menuFile.getItems().add(menuAddReview);
         
         btn.setText("Search");
         btn.setMinWidth(200);
@@ -184,6 +175,7 @@ public class MediaCenter extends Application{
         
         BorderPane root = new BorderPane();
         VBox leftBox = new VBox();
+        VBox rightBox = new VBox();
         VBox searchBox = new VBox();
         leftBox.setSpacing(15);
         leftBox.setPadding(new Insets(10,10,10,10));
@@ -211,20 +203,46 @@ public class MediaCenter extends Application{
         centerBoxMedia.getChildren().add(tv);
         
         tableTitle.setStyle("-fx-font-size:20px;");
-        
+      
+        //RIGHT BOX
         HBox rateBox = new HBox();
         TextField tf_rate = new TextField();
         Button btn_rate = new Button("Rate!");
         tf_rate.setMaxWidth(50);
         rateBox.getChildren().add(tf_rate);
         rateBox.getChildren().add(btn_rate);
-        root.setRight(rateBox);
         
+        HBox addReviewBox = new HBox();
+        Button btn_addReview = new Button("Add review");
+        addReviewBox.getChildren().add(btn_addReview);
+        
+        HBox readReviewBox = new HBox();
+        Button btn_readReview = new Button("Read reviews");
+        readReviewBox.getChildren().add(btn_readReview);
+        
+        rightBox.getChildren().addAll(rateBox, addReviewBox, readReviewBox);    
+        rightBox.setPadding(new Insets(10,10,10,10));
+        rightBox.setSpacing(10);
+        root.setRight(rightBox);
         
         btn_rate.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
                 dbCom.rateMediaEntity(me, currentUser, MathUtility.clamp(Float.parseFloat(tf_rate.getText()), 0f, 5f));
+            }
+        });
+        
+        btn_addReview.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                AddReviewStage amts = new AddReviewStage(dbCom, currentUser);
+                amts.show();
+            }
+        });
+        
+        btn_readReview.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                ReadReviewsStage amts = new ReadReviewsStage(dbCom, currentUser);
+                amts.show();
             }
         });
         
