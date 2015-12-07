@@ -53,9 +53,10 @@ public class MediaCenter extends Application{
     @Override
     public void start(Stage primaryStage) {
         
+        //Login stage. program wont continue until login window is closed.
         LoginStage loginStage = new LoginStage(dbCom, this);
-        AddMediaStage addMediaStage = new AddMediaStage(dbCom, currentUser);
         
+        AddMediaStage addMediaStage = new AddMediaStage(dbCom, currentUser);
         MenuItem menuAddMedia = new MenuItem("Media");
         menuAddMedia.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent evt){

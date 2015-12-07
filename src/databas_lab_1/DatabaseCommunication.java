@@ -24,7 +24,6 @@ public interface DatabaseCommunication {
     public ArrayList<Genre> getGenres();
     public ArrayList<MediaType> getMediaTypes();
     public ArrayList<Creator> getCreators();
-    
     public User loginWithUser(String username, String pwd);
     public void rateMediaEntity(MediaEntity me, User user, float rating);
     

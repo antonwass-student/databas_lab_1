@@ -100,6 +100,10 @@ public class DBMySql implements DatabaseCommunication{
         return types;
     }
     
+    /**
+     * Sends a query to the server asking for all creators in T_Creator table.
+     * @return ArrayList<Creator> with all the creators found.
+     */
     public ArrayList<Creator> getCreators(){
         ArrayList<Creator> creators = new ArrayList();
         try {
@@ -177,6 +181,10 @@ public class DBMySql implements DatabaseCommunication{
         return null;
     }
 
+    /**
+     * Adds a new media entity to the database.
+     * @param mediaEntity The entity to be added.
+     */
     @Override
     public void addMediaEntity(MediaEntity mediaEntity) {
         
@@ -199,6 +207,10 @@ public class DBMySql implements DatabaseCommunication{
         }
     }
 
+    /**
+     * Adds a new genre to the database.
+     * @param genre The new genre to be added.
+     */
     @Override
     public void addGenre(Genre genre) {
         try {
@@ -215,6 +227,10 @@ public class DBMySql implements DatabaseCommunication{
         }
     }
 
+    /**
+     * Adds a new type of media to the database.
+     * @param mediaType The type of media to be added.
+     */
     @Override
     public void addMediaType(MediaType mediaType) {
         try {
@@ -231,6 +247,11 @@ public class DBMySql implements DatabaseCommunication{
         }
     }
 
+    /**
+     * Adds a crator to the database.
+     * @param creator The creator to be added.
+     * @param user The user adding the creator.
+     */
     @Override
     public void addCreator(Creator creator, User user) {
         try {
@@ -363,6 +384,11 @@ public class DBMySql implements DatabaseCommunication{
         return mediaList;
     }
     
+    /**
+     * Sends a query to the database asking for a creator with specified ID.
+     * @param id the id of the creator being looked for.
+     * @return The creator if found with specified id, null if not found.
+     */
     public Creator getCreatorByID(int id){
         Creator creator = null;
         try {
@@ -383,6 +409,11 @@ public class DBMySql implements DatabaseCommunication{
         return creator;
     }
     
+    /**
+     * Sends a query to the server asking for a media type with specified ID.
+     * @param id The id of the type being requested
+     * @return The media type if found with specified ID, null if not.
+     */
     public MediaType getMediaTypeByID(int id){
         MediaType mediaType = null;
         
@@ -402,6 +433,12 @@ public class DBMySql implements DatabaseCommunication{
         return mediaType;
     }
     
+    /**
+     * A SQL query that checks wether a user has already rated the media entity.
+     * @param me the media entity to check if rated.
+     * @param user the user that wants to rate.
+     * @return True if user already has rated, false if not.
+     */
     public boolean checkIfRated(MediaEntity me, User user){
         try {
             System.out.println("me id " + me.getId());
@@ -430,6 +467,12 @@ public class DBMySql implements DatabaseCommunication{
         return true;
     }
     
+    /**
+     * Used to rate a media. Will check if the user already has rated the media.
+     * @param me the media entity to rate.
+     * @param user the user rating the entity.
+     * @param rating the score given by the user.
+     */
     public void rateMediaEntity(MediaEntity me, User user, float rating){
         
         if(checkIfRated(me, user))
