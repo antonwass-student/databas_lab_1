@@ -5,14 +5,13 @@
  */
 package databas_lab_1;
 
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -47,6 +46,26 @@ public class ReadReviewsStage extends Stage{
         vb.getChildren().add(btn_confirm);
         vb.setPadding(new Insets(10,10,10,10));
         vb.setSpacing(10);
+        
+        Thread t = new Thread(){
+            public void run(){
+
+
+                ArrayList<String> reviews = dbCom.getReviews(me);
+
+                javafx.application.Platform.runLater(
+                    new Runnable(){
+                        public void run(){
+                            tb.setText("");
+                            for(String s : reviews){
+                                tb.appendText(s);
+                            }
+                        }
+                    }
+                );
+            }
+        };
+        t.start();
         
         btn_confirm.setOnAction(new EventHandler<ActionEvent>(){
             @Override

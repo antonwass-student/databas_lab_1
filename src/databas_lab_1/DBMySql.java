@@ -39,6 +39,9 @@ public class DBMySql implements DatabaseCommunication{
     private PreparedStatement addNewCreatorSQL = null;
     private PreparedStatement rateMediaEntitySQL = null;
     private PreparedStatement checkIfRatedSQL = null;
+    private PreparedStatement addReviewSQL = null;
+    private PreparedStatement getReviewsSQL = null;
+    private PreparedStatement checkIfReviewedSQL = null;
     
     public DBMySql(){
         connect();
@@ -268,10 +271,83 @@ public class DBMySql implements DatabaseCommunication{
             System.out.println("SQL error : " + e.getMessage());
         }
     }
+    
+    @Override
+    public ArrayList<String> getReviews(MediaEntity me){
+        ArrayList<String> reviews = new ArrayList();
+        
+        try {
+            if(getReviewsSQL == null){
+                String sql = "SELECT Text, Username FROM T_Review "
+                        + " LEFT JOIN T_User "
+                        + " ON T_Review.UserID = T_User.UserID "
+                        + " WHERE MediaEntityID = ?";
+                getReviewsSQL = con.prepareStatement(sql);
+            }
+            
+            getReviewsSQL.setInt(1, me.getId());
+            
+            ResultSet rs = getReviewsSQL.executeQuery();
+            
+            while(rs.next()){
+                String review = "\n " + rs.getString(1);
+                review += "\n - " + rs.getString(2);
+                review += "\n____________________";
+                
+                reviews.add(review);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        
+        return reviews;
+    }
+    
+    public boolean checkIfReviewed(User user, MediaEntity me){
+        try {
+            if(checkIfReviewedSQL == null){
+                String sql = "SELECT * FROM T_Review WHERE userid = ? AND mediaentityid = ?";
+                checkIfReviewedSQL = con.prepareStatement(sql);
+            }
+           
+            checkIfReviewedSQL.setInt(1, user.getId());
+            checkIfReviewedSQL.setInt(2, me.getId());
+            
+            ResultSet res = checkIfReviewedSQL.executeQuery();
+            
+            if(res.next())
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
+        return true;
+    }
 
     @Override
-    public void addReview(MediaEntity mediaEntity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addReview(MediaEntity mediaEntity, String text, User user) {
+        if(checkIfReviewed(user, mediaEntity))
+            return;
+        try {
+            if(addReviewSQL == null){
+                String sql = "INSERT INTO T_Review(Text, userid, mediaentityid) values(?, ?, ?);";
+                addReviewSQL = con.prepareStatement(sql);
+            }
+            
+            addReviewSQL.setString(1, text);
+            addReviewSQL.setInt(2, user.getId());
+            addReviewSQL.setInt(3, mediaEntity.getId());
+            int res = addReviewSQL.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("SQL error : " + e.getMessage());
+        }
     }
     
     /**

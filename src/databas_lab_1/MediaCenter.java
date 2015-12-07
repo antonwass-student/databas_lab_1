@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -57,7 +56,6 @@ public class MediaCenter extends Application{
         
         //Login stage. program wont continue until login window is closed.
         LoginStage loginStage = new LoginStage(dbCom, this);
-        
         AddMediaStage addMediaStage = new AddMediaStage(dbCom, currentUser);
         MenuItem menuAddMedia = new MenuItem("Media");
         menuAddMedia.setOnAction(new EventHandler<ActionEvent>(){
@@ -230,6 +228,10 @@ public class MediaCenter extends Application{
             public void handle(ActionEvent event){
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
                 if(checkSelectedItem(me)){
+                    if(tf_rate.getText().isEmpty()){
+                        showAlert("You must enter a rating!");
+                        return;
+                    }
                     dbCom.rateMediaEntity(me, currentUser, MathUtility.clamp(Float.parseFloat(tf_rate.getText()), 0f, 5f));
                 }
             }
@@ -239,8 +241,14 @@ public class MediaCenter extends Application{
             public void handle(ActionEvent evt){              
                 MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
                 if(checkSelectedItem(me)){
-                    AddReviewStage amts = new AddReviewStage(dbCom, currentUser, me);
-                    amts.show();
+                    if(dbCom.checkIfReviewed(currentUser, me)){
+                        showAlert("You have already posted a review for \"" + me.getTitle() + "\"");
+                    }
+                    else{
+                        AddReviewStage amts = new AddReviewStage(dbCom, currentUser, me);
+                        amts.show();
+                    }
+                    
                 }
             }
         });
@@ -263,7 +271,10 @@ public class MediaCenter extends Application{
         
         primaryStage.setTitle("Media Center by Anton Wass & Joachim Zetterman");
         primaryStage.setScene(scene);
-        primaryStage.show();
+
+        
+        if(currentUser != null)
+            primaryStage.show();
     }
     
     public static void main(String[] args) {
@@ -284,6 +295,14 @@ public class MediaCenter extends Application{
     
     private void updateGenreCombobox(ArrayList<Genre> genres){
         cbGenre.setItems(FXCollections.observableArrayList(genres));
+    }
+    
+    private void showAlert(String s){
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Alert!");
+        alert.setContentText(s);
+        alert.show(); 
     }
     
     private boolean checkSelectedItem(MediaEntity me){

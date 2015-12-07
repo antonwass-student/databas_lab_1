@@ -49,9 +49,22 @@ public class AddReviewStage extends Stage{
         btn_confirm.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-               //temp
-               
-               closeStage();
+               Thread t = new Thread(){
+                    public void run(){
+                        
+                        
+                        dbCom.addReview(me, ta_review.getText(), user);
+                        
+                        javafx.application.Platform.runLater(
+                            new Runnable(){
+                                public void run(){
+                                    closeStage();
+                                }
+                            }
+                        );
+                    }
+                };
+                t.start();
             }
         });
         

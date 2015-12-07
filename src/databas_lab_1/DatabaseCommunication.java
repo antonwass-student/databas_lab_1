@@ -18,13 +18,14 @@ public interface DatabaseCommunication {
     public void addGenre(Genre genre);
     public void addMediaType(MediaType mediaType);
     public void addCreator(Creator creator, User user);
-    public void addReview(MediaEntity mediaEntity);
+    public void addReview(MediaEntity mediaEntity, String text, User user);
     public ArrayList<MediaEntity> getMediaBySearch(String keyword);
     public ArrayList<MediaEntity> getMediaBySearch(String keyword, Genre genre);
     public ArrayList<Genre> getGenres();
     public ArrayList<MediaType> getMediaTypes();
     public ArrayList<Creator> getCreators();
+    public ArrayList<String> getReviews(MediaEntity me);
     public User loginWithUser(String username, String pwd);
     public void rateMediaEntity(MediaEntity me, User user, float rating);
-    
+    public boolean checkIfReviewed(User user, MediaEntity me);
 }

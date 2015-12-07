@@ -15,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -58,7 +60,11 @@ public class LoginStage extends Stage{
                                     if(user == null){
                                         Alert alert = new Alert(AlertType.WARNING);
                                         alert.setTitle("Wrong password/username!");
-                                        alert.setContentText("You have entered an incorrect username and/or password!");
+                                        alert.setContentText("");
+                                        ImageView imgView = new ImageView(new Image("http://i.stack.imgur.com/2BvbQ.jpg"));
+                                        imgView.setFitHeight(140);
+                                        imgView.setFitWidth(270);
+                                        alert.getDialogPane().getChildren().add(imgView);
                                         alert.show(); 
                                     }
                                     else{
