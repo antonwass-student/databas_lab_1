@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -87,11 +88,20 @@ public class MediaCenter extends Application{
             }
         });
         
+        MenuItem menuAddReview = new MenuItem("Review");
+        menuAddReview.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent evt){
+                AddReviewStage amts = new AddReviewStage(dbCom, currentUser);
+                amts.show();
+            }
+        });
+        
         menuBar.getMenus().add(menuFile);
         menuFile.getItems().add(menuAddMedia);
         menuFile.getItems().add(menuAddMediaType);
         menuFile.getItems().add(menuAddGenre);
         menuFile.getItems().add(menuAddCreator);
+        menuFile.getItems().add(menuAddReview);
         
         btn.setText("Search");
         btn.setMinWidth(200);
@@ -208,6 +218,7 @@ public class MediaCenter extends Application{
         rateBox.getChildren().add(tf_rate);
         rateBox.getChildren().add(btn_rate);
         root.setRight(rateBox);
+        
         
         btn_rate.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent event){
