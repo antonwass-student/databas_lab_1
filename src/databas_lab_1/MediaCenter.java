@@ -234,14 +234,16 @@ public class MediaCenter extends Application{
         
         btn_addReview.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent evt){
-                AddReviewStage amts = new AddReviewStage(dbCom, currentUser);
+                MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
+                AddReviewStage amts = new AddReviewStage(dbCom, currentUser, me);
                 amts.show();
             }
         });
         
         btn_readReview.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent evt){
-                ReadReviewsStage amts = new ReadReviewsStage(dbCom, currentUser);
+                MediaEntity me = (MediaEntity)tv.getSelectionModel().getSelectedItem();
+                ReadReviewsStage amts = new ReadReviewsStage(dbCom, currentUser, me);
                 amts.show();
             }
         });

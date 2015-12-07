@@ -11,6 +11,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -24,13 +27,24 @@ public class ReadReviewsStage extends Stage{
     
     private Button btn_confirm = new Button("Done");
     
-    public ReadReviewsStage(DatabaseCommunication dbCom, User user){
-         this.dbCom = dbCom;
+    public ReadReviewsStage(DatabaseCommunication dbCom, User user, MediaEntity me){
+        this.dbCom = dbCom;
         super.initStyle(StageStyle.DECORATED);
         VBox vb = new VBox();
         super.setTitle("Read reviews");
         
-        vb.getChildren().add(new Label("Read reviews"));
+        TextArea tb = new TextArea();
+        tb.setEditable(false);
+        
+        //INSERT TEXT FROM DATABASE INTO tb
+        
+        if(tb.getText().trim().length() == 0){
+            tb.setText("There are no reviews for this meida entity");
+        }
+        
+        vb.getChildren().add(new Label("Review on " + me.getTitle()));
+        vb.getChildren().add(tb);
+        vb.getChildren().add(btn_confirm);
         vb.setPadding(new Insets(10,10,10,10));
         vb.setSpacing(10);
         

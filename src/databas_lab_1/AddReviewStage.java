@@ -29,14 +29,14 @@ public class AddReviewStage extends Stage{
     private Button btn_confirm = new Button("Done");
     
     
-    public AddReviewStage(DatabaseCommunication dbCom, User user){
+    public AddReviewStage(DatabaseCommunication dbCom, User user, MediaEntity me){
         this.dbCom = dbCom;
         super.initStyle(StageStyle.DECORATED);
         VBox vb = new VBox();
         VBox textBox = new VBox();
         super.setTitle("Add a new review!");
         
-        vb.getChildren().add(new Label("Add a new review!"));
+        vb.getChildren().add(new Label("Add a new review to: " + me.getTitle()));
         
         textBox.getChildren().add(new Label("Text:"));
         textBox.getChildren().add(ta_review);
@@ -50,6 +50,7 @@ public class AddReviewStage extends Stage{
             @Override
             public void handle(ActionEvent event) {
                //temp
+               
                closeStage();
             }
         });
@@ -61,6 +62,7 @@ public class AddReviewStage extends Stage{
     }
     
     private void closeStage(){
+        
         super.close();
     }
 }
