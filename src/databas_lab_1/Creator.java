@@ -6,6 +6,7 @@
 package databas_lab_1;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -13,11 +14,20 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Creator {
     private int id;
+    private ObjectId mongoId;
     private String name;
     
     public Creator(int id, String name){
         this.id = id;
         this.name = name;
+    }
+    
+    public ObjectId getMongoId(){
+        return mongoId;
+    }
+    
+    public void setMongoId(ObjectId mid){
+        mongoId = mid;
     }
     
     public String getName(){

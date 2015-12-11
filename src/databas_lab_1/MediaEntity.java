@@ -6,6 +6,7 @@
 package databas_lab_1;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -13,6 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class MediaEntity {
     private int id;
+    private ObjectId mongoId;
     private String title;
     private User addedBy;
     private Creator creator;
@@ -30,6 +32,13 @@ public class MediaEntity {
         this.rating = rating;
     }
     
+    public ObjectId getMongoId(){
+        return mongoId;
+    }
+    
+    public void setMongoId(ObjectId mid){
+        mongoId = mid;
+    }
     
     public int getId(){
         return id;

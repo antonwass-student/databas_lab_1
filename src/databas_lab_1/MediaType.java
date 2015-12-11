@@ -5,17 +5,28 @@
  */
 package databas_lab_1;
 
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author Anton
  */
 public class MediaType {
     private int id;
+    private ObjectId mongoId;
     private String type;
     
     public MediaType(int id, String type){
         this.id = id;
         this.type = type;
+    }
+    
+    public ObjectId getMongoId(){
+        return mongoId;
+    }
+    
+    public void setMongoId(ObjectId mid){
+        mongoId = mid;
     }
     
     public String getType(){

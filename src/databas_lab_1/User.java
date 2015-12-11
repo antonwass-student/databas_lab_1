@@ -5,12 +5,15 @@
  */
 package databas_lab_1;
 
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author Anton
  */
 public class User {
     private int id;
+    private ObjectId mongoId;
     private String name;
     private String password;
     
@@ -18,6 +21,14 @@ public class User {
         this.id = id;
         this.name = name;
         this.password = password;
+    }
+    
+    public ObjectId getMongoId(){
+        return mongoId;
+    }
+    
+    public void setMongoId(ObjectId mid){
+        mongoId = mid;
     }
     
     public int getId(){

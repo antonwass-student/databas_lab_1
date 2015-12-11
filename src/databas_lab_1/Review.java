@@ -5,12 +5,15 @@
  */
 package databas_lab_1;
 
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author Anton
  */
 public class Review {
     private int id;
+    private ObjectId mongoId;
     private float rating;
     private String text;
     private User author;
@@ -22,5 +25,13 @@ public class Review {
         this.text = text;
         this.author = author;
         this.media = media;
+    }
+    
+    public ObjectId getMongoId(){
+        return mongoId;
+    }
+    
+    public void setMongoId(ObjectId mid){
+        mongoId = mid;
     }
 }
