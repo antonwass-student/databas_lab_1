@@ -28,4 +28,5 @@ public interface DatabaseCommunication {
     public User loginWithUser(String username, String pwd);
     public void rateMediaEntity(MediaEntity me, User user, float rating);
     public boolean checkIfReviewed(User user, MediaEntity me);
+    public boolean checkIfRated(MediaEntity me, User user);
 }

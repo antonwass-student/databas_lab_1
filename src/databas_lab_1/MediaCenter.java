@@ -48,7 +48,8 @@ public class MediaCenter extends Application{
     private final ComboBox cbGenre = new ComboBox();
     
     public MediaCenter(){
-        this.dbCom = new DBMySql();
+        //this.dbCom = new DBMySql();
+        this.dbCom = new DBMongo();
     }
     
     @Override

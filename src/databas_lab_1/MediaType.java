@@ -21,6 +21,11 @@ public class MediaType {
         this.type = type;
     }
     
+    public MediaType(ObjectId id, String type){
+        this.mongoId = id;
+        this.type = type;
+    }
+    
     public ObjectId getMongoId(){
         return mongoId;
     }

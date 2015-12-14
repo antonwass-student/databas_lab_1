@@ -22,6 +22,11 @@ public class Creator {
         this.name = name;
     }
     
+    public Creator(ObjectId id, String name){
+        this.mongoId = id;
+        this.name = name;
+    }
+    
     public ObjectId getMongoId(){
         return mongoId;
     }

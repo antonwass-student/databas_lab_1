@@ -32,6 +32,16 @@ public class MediaEntity {
         this.rating = rating;
     }
     
+    public MediaEntity(ObjectId id, String title, MediaType mediaType, User addedBy, Creator creator, Genre genre, float rating){
+        this.mongoId = id;
+        this.title = title;
+        this.mediaType = mediaType;
+        this.addedBy = addedBy;
+        this.creator = creator;
+        this.genre = genre;
+        this.rating = rating;
+    }
+    
     public ObjectId getMongoId(){
         return mongoId;
     }

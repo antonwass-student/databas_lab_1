@@ -549,6 +549,7 @@ public class DBMySql implements DatabaseCommunication{
      * @param user the user rating the entity.
      * @param rating the score given by the user.
      */
+    @Override
     public void rateMediaEntity(MediaEntity me, User user, float rating){
         
         if(checkIfRated(me, user))

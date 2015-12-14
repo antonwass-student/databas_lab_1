@@ -23,6 +23,12 @@ public class User {
         this.password = password;
     }
     
+    public User(ObjectId id, String name, String password){
+        this.mongoId = id;
+        this.name = name;
+        this.password = password;
+    }
+    
     public ObjectId getMongoId(){
         return mongoId;
     }

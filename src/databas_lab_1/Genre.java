@@ -21,6 +21,11 @@ public class Genre {
         this.name = name;
     }
     
+    public Genre(ObjectId id, String name){
+        this.mongoId = id;
+        this.name = name;
+    }
+    
     public ObjectId getMongoId(){
         return mongoId;
     }
